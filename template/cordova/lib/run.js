@@ -33,9 +33,9 @@ module.exports.run = function (options) {
 
     // Check if ran from admin prompt and fail quickly if CLI has administrative permissions
     // http://stackoverflow.com/a/11995662/64949
-    if (ranWithElevatedPermissions())
-        return Q.reject(new CordovaError('Can not run this platform with administrative ' +
-            'permissions. Please run from a non-admin prompt.'));
+    // if (ranWithElevatedPermissions())
+    //     return Q.reject(new CordovaError('Can not run this platform with administrative ' +
+    //         'permissions. Please run from a non-admin prompt.'));
 
     // parse arg
     var args  = nopt({

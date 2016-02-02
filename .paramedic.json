@@ -4,7 +4,7 @@
     ],
     "targets": [
         {
-            "platform": "windows",
+            "platform": "windows@https://github.com/sgrebnov/cordova-windows",
             "action": "emulate",
             "args": "-- --phone"
         },

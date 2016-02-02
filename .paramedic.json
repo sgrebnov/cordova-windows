@@ -1,0 +1,22 @@
+{
+    "plugins": [
+        "cordova-plugin-file"
+    ],
+    "targets": [
+        {
+            "platform": "windows",
+            "action": "run",
+            "args": "-- --appx=uap"
+        },
+        {
+            "platform": "windows",
+            "action": "run",
+            "args": "-- --appx=8.1-win"
+        },
+        {
+            "platform": "windows",
+            "action": "emulate",
+            "args": "-- --phone"
+        }
+    ]
+}

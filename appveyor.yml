@@ -21,6 +21,7 @@
 
 install:
   - npm install
+  - npm install -g https://github.com/sgrebnov/cordova-paramedic/tarball/master
 
 build: off
 
@@ -28,4 +29,4 @@ test_script:
   - node --version
   - npm --version
   - msbuild /version
-  - npm test
+  - cordova-paramedic

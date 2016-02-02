@@ -5,6 +5,11 @@
     "targets": [
         {
             "platform": "windows",
+            "action": "emulate",
+            "args": "-- --phone"
+        },
+        {
+            "platform": "windows",
             "action": "run",
             "args": "-- --appx=uap"
         },
@@ -13,10 +18,5 @@
             "action": "run",
             "args": "-- --appx=8.1-win"
         },
-        {
-            "platform": "windows",
-            "action": "emulate",
-            "args": "-- --phone"
-        }
     ]
 }

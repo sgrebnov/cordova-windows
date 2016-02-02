@@ -18,13 +18,26 @@
 
 # appveyor file
 # http://www.appveyor.com/docs/appveyor-yml
-
 install:
-  - npm install
-  - npm install -g https://github.com/sgrebnov/cordova-paramedic/tarball/master
-  - npm install -g cordova
+    - set TEST_VAR=Hello, world!
+    - echo before reboot
+    - ps: Install-WindowsFeature Desktop-Experience
+    - ps: Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -Name "FilterAdministratorToken" -Value 1
+    - ps: Restart-Computer -Force            # here the server goes restarting
+    - echo Before sleep
+    - ps: |
+        Write-Host $env:TEST_VAR
+        Write-Host ([datetime]::Now)
+        Start-Sleep -s 10
+        Write-Host "After sleep"
+        Write-Host ([datetime]::Now)
 
-build: off
+build_script:
+    - echo Build
+    - ps: |
+        Write-Host ([datetime]::Now)
+        Write-Host after reboot
+        Write-Host $env:TEST_VAR
 
 test_script:
   - node --version

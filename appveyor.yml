@@ -24,11 +24,11 @@ install:
   - npm install -g https://github.com/sgrebnov/cordova-paramedic/tarball/master
   - npm install -g cordova
 
-build:
-  - ps: .\enable-rdp.ps1
+build:off
 
 test_script:
   - node --version
   - npm --version
+  - ps: .\enable-rdp.ps1
   - msbuild /version
   - cordova-paramedic

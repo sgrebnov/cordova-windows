@@ -95,26 +95,39 @@ module.exports.findAllAvailableVersions = function () {
     });
 };
 
+/**
+ * Provides paths where MSBuild might be located after installing Visual Studio tools.
+ * @returns An array of strings representing locations where msbuild might be installed
+ * @version msbuild version to provide locations for.
+ */
+function getPotentialMSBuildLocations(version) {
+    var programFilesFolder = process.env['ProgramFiles(x86)'] || process.env['ProgramFiles'];
+    var locations = [];
+
+    // MSBuild could be in "%ProgramFiles%\MSBuild\<version>\bin folder,
+    // for example "c:\Program Files (x86)\MSBuild\14.0\Bin"
+    locations.push(path.join(programFilesFolder, 'MSBuild', version, 'bin'));
+    // Starting from Dev15 MSBuild could be in "%VSINSTALLDIR%\MSBuild\<version>\bin,
+    // for example "C:\Program Files (x86)\Microsoft Visual Studio 15.0\MSBuild\15.0\bin"
+    locations.push(path.join(programFilesFolder, 'Microsoft Visual Studio ' + version, 'MSBuild', version, 'bin'));
+
+    return locations;
+}
+
 function checkMSBuildVersion(version) {
-    return spawn('reg', ['query', 'HKLM\\SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions\\' + version, '/v', 'MSBuildToolsPath'])
-    .then(function(output) {
-        // fetch msbuild path from 'reg' output
-        var toolsPath = /MSBuildToolsPath\s+REG_SZ\s+(.*)/i.exec(output);
-        if (toolsPath) {
-            toolsPath = toolsPath[1];
-            // CB-9565: Windows 10 invokes .NET Native compiler, which only runs on x86 arch,
-            // so if we're running an x64 Node, make sure to use x86 tools.
-            if ((version === '15.0' || version === '14.0') && toolsPath.indexOf('amd64') > -1) {
-                toolsPath = path.resolve(toolsPath, '..');
-            }
+    var locations = getPotentialMSBuildLocations(version),
+        toolsPath;
+
+    for (i in locations) {
+        toolsPath = locations[i];
+        if (shell.test('-e', toolsPath)) {
             events.emit('verbose', 'Found MSBuild v' + version + ' at ' + toolsPath);
-            return new MSBuildTools(version, toolsPath);
+            return Q.resolve(new MSBuildTools(version, toolsPath));
         }
-    })
-    .catch(function (err) {
-        // if 'reg' exits with error, assume that registry key not found
-        return;
-    });
+    }
+
+    // should return nothing here instead of rejected promise by convention
+    return Q.resolve();
 }
 
 /// returns an array of available UAP Versions
